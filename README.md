@@ -1,56 +1,180 @@
 # **Finding Lane Lines on the Road** 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-<img src="examples/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
-
-Overview
 ---
 
-When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
+### The goals / steps of this project are the following:
+* Make a pipeline that finds lane lines on the road
+* Reflect on your work in a written report
 
-In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
-
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
-
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
-
-
-Creating a Great Writeup
----
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
-
-1. Describe the pipeline
-
-2. Identify any shortcomings
-
-3. Suggest possible improvements
-
-We encourage using images in your writeup to demonstrate how your pipeline works.  
-
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
-
-
-The Project
+##### Report is prepared and submitted by Abeer Ghander
 ---
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+## Reflection
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/83ec35ee-1e02-48a5-bdb7-d244bd47c2dc/lessons/8c82408b-a217-4d09-b81d-1bda4c6380ef/concepts/4f1870e0-3849-43e4-b670-12e6f2d4b7a7) if you haven't already.
+### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
 
-**Step 2:** Open the code in a Jupyter Notebook
+#### **My pipeline consisted of 7 steps:**
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out <A HREF="https://www.packtpub.com/books/content/basics-jupyter-notebook-and-python" target="_blank">Cyrille Rossant's Basics of Jupyter Notebook and Python</A> to get started.
+Let us take those two original images for our pipelines explanation..
+<figure>
+ <img src="test_images/solidWhiteRight.jpg" width="380" alt="SolidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> Original solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images/solidYellowCurve.jpg" width="380" alt="SolidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> Original solidYellowCurve image </p>
+ </figcaption>
+</figure>
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+First, I converted the images to grayscale.
 
-`> jupyter notebook`
+<figure>
+ <img src="test_images_output/grayscale_solidWhiteRight.jpg" width="380" alt="grayscale_solidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> Gray scaled solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images_output/grayscale_solidYellowCurve.jpg" width="380" alt="grayscale_solidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> Gray scaled solidYellowCurve image </p>
+ </figcaption>
+</figure>
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+Second, I applied Gaussian blurring on the grayscale image with `kernel = 3`.
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+<figure>
+ <img src="test_images_output/gaussian_solidWhiteRight.jpg" width="380" alt="gaussian_solidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> Gaussian solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images_output/grayscale_solidYellowCurve.jpg" width="380" alt="gaussian_solidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> Gaussian solidYellowCurve image </p>
+ </figcaption>
+</figure>
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+Third, I extracted the canny edges from the gaussian blurred image. Canny transformation is applied with the `min_threshold = 50`, and `max_threshold = 150`
+<figure>
+ <img src="test_images_output/cannyEdges_solidWhiteRight.jpg" width="380" alt="CannyEdges_solidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> Canny edges solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images_output/cannyEdges_solidYellowCurve.jpg" width="380" alt="CannyEdges_solidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> Canny edges solidYellowCurve image </p>
+ </figcaption>
+</figure>
 
+Fourth, I masked out all points outside my defined region of interest. The region of interest is defined as a polygon of 4 edges as with the following pixel values: (90, Y-axis maximum), (450, 320), (510, 320), ((X-axis maximum -70), Y-axis maximum)
+<figure>
+ <img src="test_images_output/roi_solidWhiteRight.jpg" width="380" alt="CannyEdges_solidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> Region of interest solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images_output/roi_solidYellowCurve.jpg" width="380" alt="CannyEdges_solidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> Region of interest solidYellowCurve image </p>
+ </figcaption>
+</figure>
+
+Fifth, I applied hough transformation to extract the lines out of the edges in the region of interest. Hough transforms returned a set of lines on the Canny edges. Applying hough transforms required some parameter tuning as follows:
+``` python
+    rho = 1            # distance resolution in pixels of the Hough grid
+    theta = np.pi/180  # angular resolution in radians of the Hough grid
+    threshold = 5      # minimum number of votes (intersections in Hough grid cell)
+    min_line_len = 30  # minimum number of pixels making up a line
+    max_line_gap = 20  # maximum gap in pixels between connectable line segments`
+```
+
+Sixth, the lines were processed by draw_lines() function, which will be explained in the next section. The draw_lines() function returns an image with the extrapolated left and right lines of the lane.
+<figure>
+ <img src="test_images_output/lines_solidWhiteRight.jpg" width="380" alt="HoughLines_solidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> Hough lines solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images_output/lines_solidYellowCurve.jpg" width="380" alt="HoughLines_solidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> Hough lines solidYellowCurve image </p>
+ </figcaption>
+</figure>
+
+Finally, the images are weighted by adding the drawn lines on a copy of the original images creating the lane boundary lines.
+<figure>
+ <img src="test_images_output/final_solidWhiteRight.jpg" width="380" alt="HoughLines_solidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> Final lanes solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images_output/final_solidYellowCurve.jpg" width="380" alt="HoughLines_solidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> Final lanes solidYellowCurve image </p>
+ </figcaption>
+</figure>
+
+---
+
+####  **draw_lines() logic**
+
+In order to draw a single line on the left and right lanes, I modified the draw_lines() function by classifying the input hough lines to 3 groups: left lane lines, right lane lines, and lines to be ignored. 
+
+This classification is done based on the slope of the input lines dx/dy.
+* All horizontal lines (slope is between [-0.2, 0.2]) are filtered out.
+* All lines with slope < -0.2 are classified as left lane.
+* All lines with slope > 0.2 are classified as right lane.
+
+Then, a polynomial fit is performed for each of the left and right lane separately, which calculates coefficients for the fitted line. The function of the coefficients is generated for the full range of the X-axis inside the defined region of interest.
+
+Last step in draw_lines() is to draw the lines on the raw image. Those lines image are then combined with the original image to generate the final output image.
+
+<p style="text-align: center;"> 
+<figure>
+ <img src="test_images_output/final_debug_solidWhiteRight.jpg" width="380" alt="final_debug_solidWhiteRight" />
+ <figcaption>
+     <p style="text-align: center;"> draw_lines() output for solidWhiteRight image </p>
+     <p/>
+ </figcaption>
+    
+ <img src="test_images_output/final_debug_solidYellowCurve.jpg" width="380" alt="final_debug_solidYellowCurve" />
+ <figcaption>
+     <p style="text-align: center;"> draw_lines() output for solidYellowCurve image </p>
+ </figcaption>
+</figure>
+    <font style="color:Green;">Green = Classified left lane lines </font><br/>
+    <font style="color:Blue;">Blue = Classified right lane lines </font><br/>
+    <font style="color:Red;">Red = Final detected lines </font><br/>
+</p>
+
+---
+
+### 2. Identify potential shortcomings with your current pipeline
+
+
+**Some potential shortcomings would be:**
+ * when we drive on a curve, where the region of interest overlays multiple lanes at the top of the defined area.
+ * when there are multiple road marking on the same line, or unclear lines, which do not sustain the fitted line for a longer period of time.
+ * when other cars cut in or cut out the lane in front of the ego vehicle.
+ * when the region of interest contains objects other than empty lanes (e.g. trees, pedestrians, bicycles...etc).
+ * disappearing left or right lane line in case of distorted input hough tranform lines
+
+---
+
+### 3. Suggest possible improvements to your pipeline
+
+A possible improvement would be to implement a buffer to store the identified lane lines from the polynomial fit, and apply moving average on it. To make sure that the rate of change in the lane is minimal, and to increase the stability of the detected lanes
+
+Another potential improvement could be to have the region of interest dynamically configured based on the quality of the input lines coming to the pipeline. In case of clear straight-line roads, the region of interest is quite large. On the other hand, when the road is full of curves, and cutting objects, the region of interest should be minimized to the maximum visible area of the lane.
+
+---
